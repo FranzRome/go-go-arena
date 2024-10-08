@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://dtytp2ejrxpru"]
+
+[ext_resource type="Script" path="res://Scenes/gogo.gd" id="1_emkn4"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_nwkjm"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_0a8ng"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_fbhmc"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ocsdp"]
+
+[node name="Catch" type="Node3D"]
+
+[node name="Piano" type="MeshInstance3D" parent="."]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+mesh = SubResource("PlaneMesh_nwkjm")
+
+[node name="Player" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.0104462, 0.295054, -1.49788)
+mesh = SubResource("CapsuleMesh_0a8ng")
+
+[node name="Gogo" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.27229, 0.298514, 1.78929)
+mesh = SubResource("SphereMesh_fbhmc")
+script = ExtResource("1_emkn4")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Gogo"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gogo/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("SphereShape3D_ocsdp")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.997192, 0.0281876, 0.0693876, 0.0717654, 0.624627, 0.777619, -0.0214221, 0.780414, -0.624896, 0.098348, 2.27671, -1.84142)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]
+light_energy = 3.747
