@@ -1,8 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://dtytp2ejrxpru"]
+[gd_scene load_steps=11 format=3 uid="uid://dtytp2ejrxpru"]
 
-[ext_resource type="Script" path="res://Scenes/gogo.gd" id="1_emkn4"]
+[ext_resource type="PackedScene" uid="uid://rap03mn1m5mp" path="res://scenes/rope.tscn" id="1_cxg60"]
+[ext_resource type="Script" path="res://scripts/gogo_catch.gd" id="1_emkn4"]
+[ext_resource type="Material" uid="uid://bxmswiyg10hwe" path="res://materials/red.tres" id="1_tp2wp"]
+[ext_resource type="Script" path="res://scripts/player_catch.gd" id="2_i30fy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0oiag"]
+size = Vector3(5.98767, 0.507813, 5.97571)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_nwkjm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_7laus"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_0a8ng"]
 
@@ -12,13 +20,42 @@
 
 [node name="Catch" type="Node3D"]
 
-[node name="Piano" type="MeshInstance3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-1, 6.69697e-08, -5.61943e-08, 0, 0.642787, 0.766045, 8.74228e-08, 0.766044, -0.642788, 0, 2.25, -2.5)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]
+light_energy = 3.747
+
+[node name="Ground" type="Node3D" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00115967, -0.246094, 0.0108032)
+shape = SubResource("BoxShape3D_0oiag")
+
+[node name="Plane" type="MeshInstance3D" parent="Ground/StaticBody3D"]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 mesh = SubResource("PlaneMesh_nwkjm")
+skeleton = NodePath("../../..")
 
-[node name="Player" type="MeshInstance3D" parent="."]
+[node name="Player" type="Node3D" parent="."]
+
+[node name="Arrow" type="Node3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.349)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Arrow"]
+transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0.501272)
+material_override = ExtResource("1_tp2wp")
+mesh = SubResource("BoxMesh_7laus")
+
+[node name="Mesh" type="MeshInstance3D" parent="Player"]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.0104462, 0.295054, -1.49788)
 mesh = SubResource("CapsuleMesh_0a8ng")
+skeleton = NodePath("../..")
+script = ExtResource("2_i30fy")
+rope = ExtResource("1_cxg60")
+impulse = Vector3(0, 0.57, 5.5)
 
 [node name="Gogo" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.27229, 0.298514, 1.78929)
@@ -28,11 +65,4 @@ script = ExtResource("1_emkn4")
 [node name="RigidBody3D" type="RigidBody3D" parent="Gogo"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Gogo/RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("SphereShape3D_ocsdp")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-0.997192, 0.0281876, 0.0693876, 0.0717654, 0.624627, 0.777619, -0.0214221, 0.780414, -0.624896, 0.098348, 2.27671, -1.84142)
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]
-light_energy = 3.747

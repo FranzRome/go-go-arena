@@ -18,5 +18,5 @@ func _process(delta: float) -> void:
 	elif (transform.origin.x > max_x):
 		transform.origin.x = max_x
 		speed *= -1
-	print(transform.origin.x)
+	#print(transform.origin.x)
 	pass
