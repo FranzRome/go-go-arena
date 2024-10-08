@@ -35,14 +35,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00115967, -0.246094, 0.0108
 shape = SubResource("BoxShape3D_0oiag")
 
 [node name="Plane" type="MeshInstance3D" parent="Ground/StaticBody3D"]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.00626767, 0.0157453, -0.0152735)
 mesh = SubResource("PlaneMesh_nwkjm")
 skeleton = NodePath("../../..")
 
 [node name="Player" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.182248, -1.76269)
+script = ExtResource("2_i30fy")
+rope = ExtResource("1_cxg60")
 
 [node name="Arrow" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.349)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.145398, 0.0358778)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Arrow"]
 transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0.501272)
@@ -50,12 +53,9 @@ material_override = ExtResource("1_tp2wp")
 mesh = SubResource("BoxMesh_7laus")
 
 [node name="Mesh" type="MeshInstance3D" parent="Player"]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.0104462, 0.295054, -1.49788)
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.0490277, 0)
 mesh = SubResource("CapsuleMesh_0a8ng")
 skeleton = NodePath("../..")
-script = ExtResource("2_i30fy")
-rope = ExtResource("1_cxg60")
-impulse = Vector3(0, 0.57, 5.5)
 
 [node name="Gogo" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.27229, 0.298514, 1.78929)
