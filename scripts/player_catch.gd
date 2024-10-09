@@ -19,18 +19,23 @@ func _ready():
 	rope_state = ROPE_STATE.READY
 
 func _process(delta):
+	# Change throw angle based on imput
+	if(angle < rotation_max and Input.is_action_pressed("left")):
+		angle += rotation_speed * delta
+	if(angle > rotation_min and Input.is_action_pressed("right")):
+		angle -= rotation_speed * delta
+	# Adjust arrow orientation
+	arrow.rotation = Vector3(0, angle, 0)
+	
+	# Throw or recall rope based on state when throw button is pressed 
 	if(Input.is_action_just_pressed("throw")):
 		if rope_state == ROPE_STATE.READY:
 			throw_rope()
 		elif rope_state == ROPE_STATE.THREW:
 			recall_rope()
 	
-	if(angle < rotation_max and Input.is_action_pressed("left")):
-		angle += rotation_speed * delta
-	if(angle > rotation_min and Input.is_action_pressed("right")):
-		angle -= rotation_speed * delta
 		
-	arrow.rotation = Vector3(0, angle, 0)
+	
 
 func throw_rope():
 	print("Throwing rope")
