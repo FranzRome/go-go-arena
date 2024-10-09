@@ -1,8 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://dtytp2ejrxpru"]
+[gd_scene load_steps=12 format=3 uid="uid://dtytp2ejrxpru"]
 
-[ext_resource type="PackedScene" uid="uid://rap03mn1m5mp" path="res://scenes/rope.tscn" id="1_cxg60"]
+[ext_resource type="PackedScene" uid="uid://rap03mn1m5mp" path="res://Scenes/rope.tscn" id="1_cxg60"]
 [ext_resource type="Script" path="res://scripts/gogo_catch.gd" id="1_emkn4"]
-[ext_resource type="Material" uid="uid://bxmswiyg10hwe" path="res://materials/red.tres" id="1_tp2wp"]
+[ext_resource type="Material" uid="uid://bxmswiyg10hwe" path="res://Materials/red.tres" id="1_tp2wp"]
 [ext_resource type="Script" path="res://scripts/player_catch.gd" id="2_i30fy"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0oiag"]
@@ -13,6 +13,10 @@ size = Vector3(5.98767, 0.507813, 5.97571)
 [sub_resource type="BoxMesh" id="BoxMesh_7laus"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_0a8ng"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_m8rlu"]
+radius = 0.167316
+height = 0.726861
 
 [sub_resource type="SphereMesh" id="SphereMesh_fbhmc"]
 
@@ -40,9 +44,10 @@ mesh = SubResource("PlaneMesh_nwkjm")
 skeleton = NodePath("../../..")
 
 [node name="Player" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.182248, -1.76269)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -1.7)
 script = ExtResource("2_i30fy")
 rope = ExtResource("1_cxg60")
+impulse = Vector3(0, 1, 8)
 
 [node name="Arrow" type="Node3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.145398, 0.0358778)
@@ -56,6 +61,11 @@ mesh = SubResource("BoxMesh_7laus")
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.0490277, 0)
 mesh = SubResource("CapsuleMesh_0a8ng")
 skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Player"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/StaticBody3D"]
+shape = SubResource("CapsuleShape3D_m8rlu")
 
 [node name="Gogo" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.27229, 0.298514, 1.78929)

@@ -9,16 +9,24 @@ var rotation_min: float = -PI/2
 var rotation_max: float = PI/2
 var instanced_rope: Node3D
 var arrow: Node3D
+var rope_rb: RigidBody3D
+var throw_cooldown: float = 2
+var throw_timer: float
+var throw_charge: float = 0
 
-var rope_state: ROPE_STATE
+
+var rope_state: ROPE_STATE 
 
 
 func _ready():
 	arrow = get_tree().root.get_node("/root/Catch/Player/Arrow")
 	instanced_rope = null
 	rope_state = ROPE_STATE.READY
+	throw_timer = throw_cooldown
+	
 
 func _process(delta):
+	
 	# Change throw angle based on imput
 	if(angle < rotation_max and Input.is_action_pressed("left")):
 		angle += rotation_speed * delta
@@ -26,16 +34,41 @@ func _process(delta):
 		angle -= rotation_speed * delta
 	# Adjust arrow orientation
 	arrow.rotation = Vector3(0, angle, 0)
+	print(rope_state)
 	
-	# Throw or recall rope based on state when throw button is pressed 
-	if(Input.is_action_just_pressed("throw")):
-		if rope_state == ROPE_STATE.READY:
+	if rope_state == ROPE_STATE.READY:
+		if(Input.is_action_just_pressed("throw")):
+			#throw_rope()
+			rope_state = ROPE_STATE.CHARGING
+	elif rope_state == ROPE_STATE.CHARGING:
+		if(throw_charge < 1):
+			throw_charge += delta
+			if(throw_charge > 1):
+				throw_charge = 1
+		if(Input.is_action_just_released("throw")):
 			throw_rope()
-		elif rope_state == ROPE_STATE.THREW:
-			recall_rope()
+			rope_state = ROPE_STATE.THROWING
+			throw_charge = 0		
+	elif rope_state == ROPE_STATE.THROWING:
+		if(throw_timer > 0):
+			throw_timer -= delta
+			if(throw_timer <= 0):
+				rope_state = ROPE_STATE.THREW
+				throw_timer = throw_cooldown
+	elif rope_state == ROPE_STATE.THREW:
+		if(Input.is_action_just_pressed("throw")):
+			#recall_rope()
+			rope_state = ROPE_STATE.RECALLING
 	
-		
 	
+	
+
+func _physics_process(delta: float) -> void:
+	if(rope_state == ROPE_STATE.RECALLING):
+		if(rope_rb.position.distance_to(global_position) > 2):
+			attract_rope()
+		else:
+			rope_state = ROPE_STATE.READY
 
 func throw_rope():
 	print("Throwing rope")
@@ -47,15 +80,15 @@ func throw_rope():
 		instanced_rope.rotation = self.global_rotation
 		get_tree().root.get_node("/root/Catch").add_child(instanced_rope)
 		
-	var rb: RigidBody3D = instanced_rope.get_child(0) as RigidBody3D
-	rb.apply_central_impulse(impulse.rotated(Vector3.UP, angle))
-	rope_state = ROPE_STATE.THREW
+	rope_rb = instanced_rope.get_child(0) as RigidBody3D
+	rope_rb.apply_central_impulse(impulse.rotated(Vector3.UP, angle) * throw_charge)
+	
 
 func recall_rope():
 	print("Recalling rope")
-	if(not instanced_rope == null):
-		var rb: RigidBody3D = instanced_rope.get_child(0) as RigidBody3D
-		var direction_to: Vector3 = rb.global_position.direction_to(global_position)
+	if(instanced_rope != null):
+		#var rb: RigidBody3D = instanced_rope.get_child(0) as RigidBody3D
+		var direction_to: Vector3 = rope_rb.global_position.direction_to(global_position)
 		
 		'''
 		print ("Global rope position: ", rb.global_position)
@@ -63,11 +96,22 @@ func recall_rope():
 		print("Angle between player and rope: ", direction_to)
 		'''
 		
-		rb.apply_central_impulse(direction_to * 3 + Vector3.UP * 2)
+		rope_rb.apply_central_impulse(direction_to * 3 + Vector3.UP * 2)
+		rope_state = ROPE_STATE.RECALLING
 		
-	rope_state = ROPE_STATE.RECALLING
+	
 
+func attract_rope():
+	if(instanced_rope != null):
+		var direction_to: Vector3 = rope_rb.global_position.direction_to(global_position)
+		rope_rb.apply_central_force(direction_to * 10 + Vector3.UP * 2)
+		rope_state = ROPE_STATE.RECALLING
+		
+	
+	
+	
+	
 
 # Enums
-enum ROPE_STATE{READY, THROWING, THREW, RECALLING}
+enum ROPE_STATE{READY, CHARGING, THROWING, THREW, RECALLING}
 	
